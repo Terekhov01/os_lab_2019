@@ -99,10 +99,18 @@ int main(int argc, char **argv) {
 
   int *array = malloc(sizeof(int) * array_size);
   GenerateArray(array, array_size, seed);
+  for (int i=0;i<array_size;i++)
+  {
+      printf("%d\n",array[i]);
+  }
   int active_child_processes = 0;
 
   struct timeval start_time;
   gettimeofday(&start_time, NULL);
+
+  int n = array_size / pnum;
+  int pipefd[2];
+  pipe(pipefd);
 
   for (int i = 0; i < pnum; i++) {
     pid_t child_pid = fork();
@@ -113,11 +121,22 @@ int main(int argc, char **argv) {
         // child process
 
         // parallel somehow
-
+        struct MinMax min_max;
+        min_max = GetMinMax(array, (unsigned int)i * n, (unsigned int)(i + 1) * n);
         if (with_files) {
-          // use files here
+            FILE *fp;
+            if (i == 0)
+            {
+                fp = fopen("output.txt", "w");
+            }
+            else
+            {
+                fp = fopen("output.txt", "a");
+            }
+            fprintf(fp, "%d %d\n", min_max.min, min_max.max);
+            fclose(fp);
         } else {
-          // use pipe here
+            write(pipefd[1], &min_max, sizeof(struct MinMax));
         }
         return 0;
       }
@@ -127,10 +146,9 @@ int main(int argc, char **argv) {
       return 1;
     }
   }
-
+  
   while (active_child_processes > 0) {
-    // your code here
-
+    wait(NULL);
     active_child_processes -= 1;
   }
 
@@ -143,9 +161,26 @@ int main(int argc, char **argv) {
     int max = INT_MIN;
 
     if (with_files) {
-      // read from files
+      struct MinMax min_max;
+      FILE *fp;
+      int j;
+      fp = fopen("output.txt", "r");
+      for (j = 0; j < i || (i == 0 && j <= i); j++)
+      {
+        fscanf(fp, "%d %d", &min_max.min, &min_max.max);
+        if (min < min_max.min)
+          min_max.min = min;
+        if (max > min_max.max)
+          min_max.max = max;
+      }
+      fclose(fp);
+      min = min_max.min;
+      max = min_max.max;
     } else {
-      // read from pipes
+      struct MinMax min_max;
+      read(pipefd[0], &min_max, sizeof(struct MinMax));
+      min = min_max.min;
+      max = min_max.max;
     }
 
     if (min < min_max.min) min_max.min = min;
