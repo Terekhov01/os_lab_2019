@@ -42,16 +42,29 @@ int main(int argc, char **argv) {
             seed = atoi(optarg);
             // your code here
             // error handling
+            if (seed <= 0)
+            {
+                printf("seed must be positive");
+                seed = -1;
+            }
             break;
           case 1:
             array_size = atoi(optarg);
             // your code here
             // error handling
+            if (array_size <= 0)
+            {
+                printf("arraysize must be positive");
+                array_size = -1;
+            }
             break;
           case 2:
             pnum = atoi(optarg);
-            // your code here
-            // error handling
+            if (pnum <= 0)
+            {
+                printf("pnum is positive number");
+                pnum = -1;
+            }
             break;
           case 3:
             with_files = true;
