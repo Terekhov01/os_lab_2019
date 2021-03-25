@@ -12,13 +12,23 @@ struct SumArgs {
 
 int Sum(const struct SumArgs *args) {
   int sum = 0;
-  // TODO: your code here 
+  for(int i=args->begin;i<args->end;i++)
+  {
+      sum+=args->array[i];
+  }
   return sum;
 }
 
 void *ThreadSum(void *args) {
   struct SumArgs *sum_args = (struct SumArgs *)args;
   return (void *)(size_t)Sum(sum_args);
+}
+
+void GenerateArray(int *array, unsigned int array_size, unsigned int seed) {
+  srand(seed);
+  for (int i = 0; i < array_size; i++) {
+    array[i] = rand();
+  }
 }
 
 int main(int argc, char **argv) {
@@ -39,8 +49,8 @@ int main(int argc, char **argv) {
    * your code here
    * Generate array here
    */
-
   int *array = malloc(sizeof(int) * array_size);
+  GenerateArray(array, array_size, seed);
 
   struct SumArgs args[threads_num];
   for (uint32_t i = 0; i < threads_num; i++) {
