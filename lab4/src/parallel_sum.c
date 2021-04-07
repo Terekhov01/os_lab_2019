@@ -119,13 +119,10 @@ int main(int argc, char **argv) {
   int *array = malloc(sizeof(int) * array_size);
   GenerateArray(array, array_size, seed);
 
-  int result = 0;
   for(int i=0;i<array_size;i++)
   {
-      result += array[i];
-      printf("%d | %d\n", array[i], result);
+      printf("%d | ", array[i]);
   }
-  printf("vot eto nujno poluchit': %d\n", result);
   printf("\n");
 
   struct timeval start_time;
@@ -148,8 +145,15 @@ int main(int argc, char **argv) {
     pthread_join(threads[i], (void **)&sum);
     total_sum += sum;
   }
+  
+  struct timeval finish_time;
+  gettimeofday(&finish_time, NULL);
+
+  double elapsed_time = (finish_time.tv_sec - start_time.tv_sec) * 1000.0;
+  elapsed_time += (finish_time.tv_usec - start_time.tv_usec) / 1000.0;
 
   free(array);
   printf("Total: %d\n", total_sum);
+  printf("Elapsed time: %fms\n", elapsed_time);
   return 0;
 }
