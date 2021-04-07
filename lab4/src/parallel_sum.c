@@ -16,21 +16,22 @@
 #include "utils.h"
 
 #include <pthread.h>
+#include "sum.h"
 
-struct SumArgs {
-  int *array;
-  int begin;
-  int end;
-};
+// struct SumArgs {
+//   int *array;
+//   int begin;
+//   int end;
+// };
 
-int Sum(const struct SumArgs *args) {
-  int sum = 0;
-  for(int i=args->begin;i<args->end;i++)
-  {
-      sum+=args->array[i];
-  }
-  return sum;
-}
+// int Sum(const struct SumArgs *args) {
+//   int sum = 0;
+//   for(int i=args->begin;i<args->end;i++)
+//   {
+//       sum+=args->array[i];
+//   }
+//   return sum;
+// }
 
 void *ThreadSum(void *args) {
   struct SumArgs *sum_args = (struct SumArgs *)args;
@@ -119,11 +120,12 @@ int main(int argc, char **argv) {
   int *array = malloc(sizeof(int) * array_size);
   GenerateArray(array, array_size, seed);
 
+  int result = 0;
   for(int i=0;i<array_size;i++)
   {
-      printf("%d | ", array[i]);
+      result += array[i];
   }
-  printf("\n");
+  printf("\nwithout threads: %d\n", result);
 
   struct timeval start_time;
   gettimeofday(&start_time, NULL);
