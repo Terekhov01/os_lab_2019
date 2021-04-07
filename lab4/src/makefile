@@ -16,5 +16,8 @@ process_memory.o:
 	$(CC) -c process_memory.c 
 	$(CC) process_memory.o -o process_memory $(CFLAGS)
 
+parallel_sum : utils.o
+	$(CC) -pthread parallel_sum.c
+
 clean :
 	rm utils.o find_min_max.o parallel_min_max process_memory process_memory.o
