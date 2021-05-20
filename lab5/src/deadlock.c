@@ -55,7 +55,7 @@ void thing_A(int *pnum_times) {
         pthread_mutex_lock(&mut2);
         *pnum_times = work; /* write back */
         pthread_mutex_unlock(&mut2);
-	pthread_mutex_unlock(&mut1);
+	  pthread_mutex_unlock(&mut1);
   }
 }
 

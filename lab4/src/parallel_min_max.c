@@ -153,7 +153,7 @@ int main(int argc, char **argv) {
       else
       {
         alarm(timeout);
-        signal(SIGKILL, SIG_DFL);
+        signal(SIGALRM, kill(0, 0));
         printf("proccess killed\n");
       }
     } else {
